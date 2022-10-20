@@ -96,7 +96,7 @@ void clamps_NS::connection(board_NS::board& board, logicalElement& currElement) 
 			bool isInput;
 			std::cout << "Connect that element to input (1) or to output (0) clamps:" << std::endl;
 			io_NS::getIndex(flag);
-			if (flag != 1 and flag != 0)
+			if (flag != 1 && flag != 0)
 				throw std::invalid_argument("Invalid type of clamp.");
 			if (flag == 1)
 				isInput = true;

@@ -113,7 +113,7 @@ void board_NS::processing_element(board& board, const size_t ans){
 			"2.Change signal in a current logical element", 
 			"3.Change connection in a current logical element", 
 			"4.Show clamps in a current logical element", 
-			"5.Add a clamp to a current logical element or show one"
+			"5.Add a clamp to a current logical element or show one",
 			"6.Compare a current logical element to another",
 			"7.Change a current logical element with sum (with options)"};	
 	const int Nmsgs = sizeof(msgs)/sizeof(msgs[0]);

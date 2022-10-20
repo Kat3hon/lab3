@@ -26,6 +26,7 @@ private:
 	bool signalString(const std::string& str);
 	bool is_equal_clamps(const clamp& first, const clamp& second) const;
 	int is_in_element(const clamp& other) const;
+	bool found (const size_t arr[], const size_t size, const size_t num_clamp_from);
 
 public:
 	logicalElement();

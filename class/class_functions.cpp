@@ -76,8 +76,6 @@ int logicalElement:: is_in_element(const clamp& other) const {
 ///////////////////////////////CONSTRUCTORS///////////////////////////////////////////////////
 
 logicalElement::logicalElement() { //invertor
-	if (N < 2)
-		throw std::invalid_argument("Invalid number of clamps");
 	clamp value1(true);
 	clamp value2(false);
 	clamps[0] = value1;
@@ -192,11 +190,14 @@ size_t logicalElement::getCurrsize() const {
 // }
 
 void logicalElement::findEmptyConnection(size_t& num_clamp, size_t& num_connection, const bool isInput) {
-	for (;num_clamp < currsize; ++num_clamp){
-		for (;num_connection < clamps[num_clamp].currConnections; ++num_connection)
-			if (clamps[num_clamp].isInput == isInput && clamps[num_clamp].connections[num_connection] == 0)
+	for (size_t i = 0; i < currsize; ++i){
+		for (size_t j = 0; j < clamps[i].maxConnections; ++j) {
+			if (clamps[i].isInput == isInput && clamps[i].connections[j] == 0) {
+				num_clamp = i;
+				num_connection = j;
 				return;
-		num_connection = 0;				
+			}
+		}					
 	}	
 	if (isInput == true)
 		num_connection = 1;
@@ -260,8 +261,9 @@ void logicalElement::addConnection(logicalElement& other, const bool isInput) {
 // }
 
 void logicalElement::shift (const size_t connection, const size_t clamp) {
-	for (size_t i = connection; i < clamps[clamp].currConnections - 1; ++i)
+	for (size_t i = connection; i < clamps[clamp].currConnections-1; ++i) {
 		clamps[clamp].connections[i] = clamps[clamp].connections[i+1];
+	}
 	clamps[clamp].connections[clamps[clamp].currConnections-1] = 0;
 }
 
@@ -270,21 +272,31 @@ void logicalElement::emptyCase(const size_t clamp) {
 		clamps[clamp].signal = 'X';
 }
 
+bool logicalElement::found (const size_t arr[], const size_t size, const size_t num_clamp_from) {
+	for (size_t i = 0; i < size; ++i) {
+		if (num_clamp_from == arr[i])
+			return true;
+	}	
+	return false;
+}
+
 void logicalElement::deleteConnection(logicalElement& other) {
 	if (&other == this)
 		throw std::runtime_error("Can not disconnect the same elements");
 	size_t clamp_from, connection_from, clamp_to, connection_to, flag = 0;				
 	for (size_t i = 0; i < currsize; ++i)
 		for (size_t k = 0; k < clamps[i].currConnections; ++k)
-			for (size_t j = 0; j < other.currsize; ++j)
-				if (std::find(std::begin(other.clamps[j].connections), std::end(other.clamps[j].connections), clamps[i].connections[k])) {
+			for (size_t j = 0; j < other.currsize; ++j) {
+				//auto found {std::find(std::begin(other.clamps[j].connections), std::end(other.clamps[j].connections), clamps[i].connections[k])};
+				if (j+1 == clamps[i].connections[k] && found(other.clamps[j].connections, other.clamps[j].currConnections, i+1)) {
 					clamp_from = i;
 					connection_from = k;
 					clamp_to = j;
-					connection_to = clamps[i].connections[k];
+					connection_to = clamps[i].connections[k]-1;
 					flag = 1;
 					break;
 				}
+			}	
 	if (flag == 0)
 		throw std::runtime_error("These two elements are not connected.");
 
@@ -319,14 +331,14 @@ logicalElement logicalElement::operator+ (const logicalElement& other) const {
 	if (new_elem.currsize+other.currsize >= N)
 		throw std::invalid_argument("Too many clamps to add.");
 	for (size_t i = 0; i < other.currsize; ++i) {
-		new_elem.clamps[new_elem.currsize+i+1].isInput = other.clamps[i].isInput;
-		new_elem.clamps[new_elem.currsize+i+1].maxConnections = other.clamps[i].maxConnections;
-		new_elem.clamps[new_elem.currsize+i+1].signal = other.clamps[i].signal;
-		new_elem.clamps[new_elem.currsize+i+1].currConnections = other.clamps[i].currConnections;
+		new_elem.clamps[new_elem.currsize+i].isInput = other.clamps[i].isInput;
+		new_elem.clamps[new_elem.currsize+i].maxConnections = other.clamps[i].maxConnections;
+		new_elem.clamps[new_elem.currsize+i].signal = other.clamps[i].signal;
+		new_elem.clamps[new_elem.currsize+i].currConnections = other.clamps[i].currConnections;
 		for (size_t j = 0; j < other.clamps[i].currConnections; ++j)
-			new_elem.clamps[new_elem.currsize+i+1].connections[j] = other.clamps[i].connections[j];
-		(new_elem.currsize)++;
+			new_elem.clamps[new_elem.currsize+i].connections[j] = other.clamps[i].connections[j];
 	}
+	new_elem.currsize += other.currsize;
 	return new_elem;
 }
 
@@ -334,13 +346,13 @@ logicalElement logicalElement::operator+ (const clamp& other) const {
 	logicalElement new_elem{*this};
 	if (new_elem.currsize+1 >= N)
 		throw std::invalid_argument("Can not add another clamp.");
-	(new_elem.currsize)++;
 	new_elem.clamps[new_elem.currsize].isInput = other.isInput;
 	new_elem.clamps[new_elem.currsize].maxConnections = other.maxConnections;
 	new_elem.clamps[new_elem.currsize].signal = other.signal;
 	new_elem.clamps[new_elem.currsize].currConnections = other.currConnections;
 	for (size_t j = 0; j < other.currConnections; ++j)
 		new_elem.clamps[new_elem.currsize].connections[j] = other.connections[j];
+	new_elem.currsize++;
 	return new_elem;
 }
 
@@ -382,27 +394,27 @@ logicalElement& logicalElement::operator+= (const logicalElement& other) {
 	if (currsize+other.currsize >= N)
 		throw std::invalid_argument("Too many clamps to add.");
 	for (size_t i = 0; i < other.currsize; ++i) {
-		clamps[currsize+i+1].isInput = other.clamps[i].isInput;
-		clamps[currsize+i+1].maxConnections = other.clamps[i].maxConnections;
-		clamps[currsize+i+1].signal = other.clamps[i].signal;
-		clamps[currsize+i+1].currConnections = other.clamps[i].currConnections;
+		clamps[currsize+i].isInput = other.clamps[i].isInput;
+		clamps[currsize+i].maxConnections = other.clamps[i].maxConnections;
+		clamps[currsize+i].signal = other.clamps[i].signal;
+		clamps[currsize+i].currConnections = other.clamps[i].currConnections;
 		for (size_t j = 0; j < other.clamps[i].currConnections; ++j)
-			clamps[currsize+i+1].connections[j] = other.clamps[i].connections[j];
-		currsize++;
+			clamps[currsize+i].connections[j] = other.clamps[i].connections[j];
 	}
+	currsize+=other.currsize;
 	return *this;
 }
 
 logicalElement& logicalElement::operator+= (const clamp& other) {
 	if (currsize+1 >= N)
 		throw std::invalid_argument("Can not add another clamp.");
-	currsize++;
 	clamps[currsize].isInput = other.isInput;
 	clamps[currsize].maxConnections = other.maxConnections;
 	clamps[currsize].signal = other.signal;
 	clamps[currsize].currConnections = other.currConnections;
 	for (size_t j = 0; j < other.currConnections; ++j)
 		clamps[currsize].connections[j] = other.connections[j];
+	currsize++;
 	return *this;
 }
 
