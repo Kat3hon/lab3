@@ -2,19 +2,16 @@
 
 int main() {
 	std::cout << "Let's start!" << std::endl << std::endl;
-	int rc;
-	const char* msgs[] = {"\n0.Quit", 
-			"1.Create logical element", 
-			"2.Change signal in logical element", 
-			"3.Change connection in logical element", 
-			"4.Show clamps in logical element", 
-			"5.Add clamp to logical element"};
+	size_t rc;
+	const char* msgs[] = {"\n0.Quit", "1.Create new logical element",
+						"2.Delete logical element", "3.Process logical element",
+						"4.Show all elements"};
 	const int Nmsgs = sizeof(msgs)/sizeof(msgs[0]);
-	int (*fptr[])(logicalElement&) = {nullptr, dialog::create, dialog::signal, dialog::connection,
-										dialog::show, dialog::clamp};
-	logicalElement log_element {};									
-	while (rc = dialog::dialog(msgs, Nmsgs))
-		if(fptr[rc](log_element))
+	board_NS::board main_board;
+	int (*fptr[])(board_NS::board&) = {nullptr, board_NS::create, board_NS::deleteEl, 
+						board_NS::process, board_NS::show};								
+	while (rc = dialog(msgs, Nmsgs))
+		if(fptr[rc](main_board))
 			break;
 	std::cout << "That is all! End..." << std::endl;
 	return 0;						

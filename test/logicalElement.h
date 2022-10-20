@@ -2,60 +2,57 @@
 #include <iostream>
 #include <math.h>
 #include <limits>
+#include <string>
 
-typedef struct clamp { //default = input clamp
-		bool isInput = true; //1 - input clamp, 0 - output clamp
+struct clamp { //default = input clamp
+		bool isInput; //1 - input clamp, 0 - output clamp
 		char signal = 'X'; //'1','0' or 'X' 
-		int maxConnections;
-		int currConnections = 0;
-		int connections[3] = {-1}; 
-} clamp; 
+		size_t maxConnections; //1 if input clamp else 0
+		size_t currConnections = 0;
+		size_t connections[3] = {0}; 
+		clamp(const bool input_flag);
+		clamp();
+}; 
 
 class logicalElement {
 private:
-	int currsize = 0;
+	size_t currsize = 0;
+	static const size_t N = 10;
 	clamp clamps[N];
 
-	clamp createDefaultInputClamp();
-	clamp createDefaultOutputClamp();
-	bool is_equal_clamps(const clamp& first, const clamp& second);
-	int is_in_element(const clamp& other);
+	void findEmptyConnection(size_t& num_clamp, size_t& num_connection, const bool isInput);
+	void shift (const size_t connection, const size_t clamp);
+	void emptyCase(const size_t clamp);
+	bool signalString(const std::string& str);
+	bool is_equal_clamps(const clamp& first, const clamp& second) const;
+	int is_in_element(const clamp& other) const;
+
 public:
 	logicalElement();
-	logicalElement(int num_inputClamps, int num_outputClamps);
-	logicalElement(clamp specArr[], int size);
+	logicalElement(size_t num_inputClamps, size_t num_outputClamps);
+	logicalElement(clamp specArr[], size_t size);
 	logicalElement(const logicalElement &other);
 
-	void setSignal();
-	void setSignal(char value, int num);
-	char getSignal(int num) const;
-	int getCurrsize() const;
-	void addConnection(int to_clamp, int from_clamp);
-	void deleteConnection(int from_clamp);
+	void setSignal(const std::string& signals);
+	void setSignal(char value, size_t num);
+	char getSignal(size_t num) const;
+	size_t getCurrsize() const;
+	void addConnection(logicalElement& other, const bool isInput);
+	void deleteConnection(logicalElement& other);
+	void deleteConnection();
 
 	void addClamp(clamp& value);
 
-	friend std::ostream& operator<< (std::ostream &c, const logicalElement& value);
+	friend std::ostream& operator>> (std::ostream &in, logicalElement& value);
+	friend std::ostream& operator<< (std::ostream &out, const logicalElement& value);
 	logicalElement& operator= (const logicalElement& other);
-	logicalElement& operator+ (const logicalElement& other);
-	logicalElement& operator+ (const clamp& other);
-	logicalElement& operator- (const logicalElement& other);
-	logicalElement& operator- (const clamp& other);
+	logicalElement operator+ (const logicalElement& other) const;
+	logicalElement operator+ (const clamp& other) const;
 	logicalElement& operator! ();
-	bool operator< (const logicalElement& other);
-	bool operator> (const logicalElement& other);
-	bool operator== (const logicalElement& other);
-	bool operator!= (const logicalElement& other);
-	bool operator<= (const logicalElement& other);
-	bool operator>= (const logicalElement& other);
-	void operator-- ();
-	const logicalElement operator--() const;
-	void operator+= (const logicalElement& other);
-	void operator+= (const clamp& other);
-	void operator-= (const logicalElement& other);
-	void operator-= (const clamp& other);
-	clamp operator[] (const int index) const;
+	bool operator== (const logicalElement& other) const;
+	bool operator!= (const logicalElement& other) const;
+	logicalElement& operator+= (const logicalElement& other);
+	logicalElement& operator+= (const clamp& other);
+	clamp operator[] (const size_t index) const;
+	clamp& operator[] (const size_t index);
 };
-
-void getChar(char& value);
-void getRightSignal(char& value);

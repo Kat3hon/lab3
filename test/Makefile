@@ -1,5 +1,5 @@
 CC=g++ -std=c++20
-CFLAGS=-c -Wall -DN=5
+CFLAGS=-c -Wall 
 LDFLAGS=-L. -lgtest -llogicalElement
 
 all: exe

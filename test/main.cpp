@@ -2,7 +2,9 @@
 #include "logicalElement.h"
 
 
-
+TEST(some, some) {
+	ASSERT_EQ(1,1);
+}
 
 ////////////////////////////////////////////////////////
 
