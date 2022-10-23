@@ -56,6 +56,7 @@ void clamps_NS::signal(board_NS::board& board, logicalElement& currElement) {
 			std::cout << currElement;
 			std::cout << "Input a number of clamp:" << std::endl;
 			io_NS::getIndex(number);
+			std::cout << "Input a signal:" << std::endl;
 			io_NS::getRightSignal(signal);	
 			currElement.setSignal(signal, number);
 			return;

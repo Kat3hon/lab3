@@ -76,7 +76,9 @@ int logicalElement:: is_in_element(const clamp& other) const {
 ///////////////////////////////CONSTRUCTORS///////////////////////////////////////////////////
 
 logicalElement::logicalElement() { //invertor
-	clamps = new clamp[2];
+	clamp* tmp = new clamp[2];
+	delete clamps;
+	clamps = tmp;
 	clamp value1(true);
 	clamp value2(false);
 	clamps[0] = value1;
@@ -86,7 +88,9 @@ logicalElement::logicalElement() { //invertor
 }
 
 logicalElement::logicalElement(size_t num_inputClamps, size_t num_outputClamps) {
-	clamps = new clamp[num_inputClamps+num_outputClamps];
+	clamp* tmp = new clamp[num_inputClamps+num_outputClamps];
+	delete clamps;
+	clamps = tmp;
 	for (size_t i = 0; i < num_inputClamps; ++i) {
 		clamp value(true);
 		clamps[i] = value;
@@ -100,7 +104,9 @@ logicalElement::logicalElement(size_t num_inputClamps, size_t num_outputClamps) 
 }
 
 logicalElement::logicalElement(clamp specArr[], size_t size) {
-	clamps = new clamp[size];
+	clamp* tmp = new clamp[size];
+	delete clamps;
+	clamps = tmp;
 	for (size_t i = 0; i < size; ++i) {
 		currsize++;
 		clamps[i] = specArr[i];
@@ -110,10 +116,10 @@ logicalElement::logicalElement(clamp specArr[], size_t size) {
 //когда не подойдет конструктор по умолчанию? (или копирующий оператор =)
 
 logicalElement::logicalElement(const logicalElement &other) {
-	clamp* tmp = new clamp[other.currsize];
+	clamps = new clamp[other.currsize];
+	//std::copy
 	for (size_t i = 0; i < other.currsize; ++i)
 		tmp[i] = other.clamps[i];
-	delete clamps;
 	clamps = tmp;
 	currsize = other.currsize;
 }
@@ -328,11 +334,16 @@ void logicalElement::addClamp(clamp& value) {
 /////////////////////////////////OPERATORS/////////////////////////////////////////////////
 
 logicalElement& logicalElement::operator= (const logicalElement& other) {
+	//перевыделять память, a=b, a=a два случая
 	for (size_t i = 0; i < other.currsize; ++i)
 		clamps[i] = other.clamps[i];
 	currsize = other.currsize;
 	return *this;
 }
+
+//перемещающий =
+
+//std::copy клеммы
 
 logicalElement logicalElement::operator+ (const logicalElement& other) const {
 	logicalElement new_elem{*this};

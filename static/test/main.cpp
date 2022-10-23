@@ -221,6 +221,8 @@ TEST(index, good) {
 	ASSERT_EQ(value.currConnections, a[1].currConnections);
 }
 
+//
+
 ////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {

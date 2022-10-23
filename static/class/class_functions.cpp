@@ -131,11 +131,6 @@ void logicalElement::setSignal(const std::string& signals){
 	}
 }
 
-std::ostream& operator>> (std::ostream &in, logicalElement& value) {
-	std::cout << "asdasd\n";
-	return in;
-}
-
 std::ostream& operator<< (std::ostream &out, const logicalElement& value) {
 	for (size_t i = 0; i < value.currsize; ++i) {
 		out << "The clamp #" << i+1 << ":" << std::endl;
@@ -420,14 +415,18 @@ logicalElement& logicalElement::operator+= (const clamp& other) {
 
 //ссылка на clamp, (не)констрант индексация
 
+//const clamp& вернется ли?
+
 clamp logicalElement::operator[] (const size_t index) const {
 	if (index >= currsize) 
 		throw std::invalid_argument("Invalid index number.");
+	std::cout << "const index" << std::endl;
 	return clamps[index];
 }
 
 clamp& logicalElement::operator[] (const size_t index) {
 	if (index >= currsize) 
 		throw std::invalid_argument("Invalid index number.");
+	std::cout << "not const index" << std::endl;
 	return clamps[index];
 }
