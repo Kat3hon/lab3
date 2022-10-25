@@ -17,9 +17,12 @@ struct clamp { //default = input clamp
 class logicalElement {
 private:
 	size_t currsize = 0;
+#ifndef dynamic
 	static const size_t N = 10;
 	clamp clamps[N];
-
+#elif
+    clamp* clamps;
+#endif
 	void findEmptyConnection(size_t& num_clamp, size_t& num_connection, const bool isInput);
 	void shift (const size_t connection, const size_t clamp);
 	void emptyCase(const size_t clamp);
@@ -33,6 +36,9 @@ public:
 	logicalElement(size_t num_inputClamps, size_t num_outputClamps);
 	logicalElement(clamp specArr[], size_t size);
 	logicalElement(const logicalElement &other);
+#ifdef dynamic
+    ~logicalElement();
+#endif
 
 	void setSignal(const std::string& signals);
 	void setSignal(char value, size_t num);
