@@ -1,4 +1,4 @@
-#include "logicalElement.h"
+#include "dynamic/main/logicalElement.h"
 
 size_t dialog(const char* msgs[], size_t Nmsgs);
 

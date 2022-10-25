@@ -128,7 +128,7 @@ void clamps_NS::show(board_NS::board& board, logicalElement& currElement) {
 }
 
 void clamps_NS::clamp(board_NS::board& board, logicalElement& currElement) {
-	std::cout << "5.1.Add a clamp to a current logical element (with class's method)\n5.2.Add a clamp to a current logical element (with operator +)\n5.3.Show a clamp" << std::endl;
+	std::cout << "5.1.Add a clamp to a current logical element (with logicalElementDynamic's method)\n5.2.Add a clamp to a current logical element (with operator +)\n5.3.Show a clamp" << std::endl;
 	size_t ans;
 	io_NS::getIndex(ans);	
 	switch(ans) {
