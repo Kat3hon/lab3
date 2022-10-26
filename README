@@ -1,15 +1,15 @@
 If you want to run static program, you need to:
-1. Open CMakeLists.txt in lab3/
+1. Open CMakeLists.txt in lab3-master/
 2. Comment or delete "add_compile_definitions(dynamic)"
 3. Re-built the project.
 
 If you want to built library or run tests of dynamic program, you need to:
 1. For library:
-    1.1. Open CMakeLists.txt in lab3/external/
+    1.1. Open CMakeLists.txt in lab3-master/external/
     1.2. Add "add_compile_definitions(dynamic)"
     1.3. Re-built library. Be careful not to mix a static project with a dynamic library!
 2. For tests:
-    2.1. Open CMakeLists.txt in lab3/GTESTS/
+    2.1. Open CMakeLists.txt in lab3-master/GTESTS/
     2.2. Add "add_compile_definitions(dynamic)"
     2.3. Re-built tests. Be careful not to mix a static tests with a dynamic library or a dynamic tests with a static library!
 
