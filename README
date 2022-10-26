@@ -1,9 +1,17 @@
-If you want to run static program, you need to:
+Library constists of two files:
+    logicalElement.h - class and methods
+    logicalElement.cpp - implementation
+To built Library you need only object-file.
+If you want to connect Library to main.cpp (main project) or main.cpp (test-program), you can just use my CMakeLists.txt file.
+
+If there are problems with output to the console, it may be worth changing the encoding of the console.
+
+If you want to run static project, you need to:
 1. Open CMakeLists.txt in lab3-master/
 2. Comment or delete "add_compile_definitions(dynamic)"
 3. Re-built the project.
 
-If you want to built library or run tests of dynamic program, you need to:
+If you want to built library or run tests of dynamic project, you need to:
 1. For library:
     1.1. Open CMakeLists.txt in lab3-master/external/
     1.2. Add "add_compile_definitions(dynamic)"
