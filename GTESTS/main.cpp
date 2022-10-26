@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "logicalElement.h"
+//#define dynamic
 
 /////////////////////////////constructors////////////////////
 
@@ -26,7 +27,7 @@ TEST(nums_conctructor, good) {
 	ASSERT_EQ('X', s4);
 	ASSERT_EQ(4, c);
 }
-
+#ifndef dynamic
 TEST(nums_conctructor, bad) {
 	ASSERT_ANY_THROW(logicalElement a(6,6));
 }
@@ -35,6 +36,7 @@ TEST(array_conctructor, bad) {
 	clamp arr[15];
 	ASSERT_ANY_THROW(logicalElement b(arr,15));
 }
+#endif
 
 TEST(array_constructor, good) {
 	clamp arr[5];
@@ -42,6 +44,20 @@ TEST(array_constructor, good) {
 	logicalElement b(arr, 5);
 	ASSERT_EQ(true, a==b);
 }
+
+TEST(copy_concstructor, good) {
+    logicalElement a(2,2);
+    logicalElement b(a);
+    ASSERT_EQ(true, a==b);
+    ASSERT_EQ(4,a.getCurrsize());
+}
+#ifdef dynamic
+TEST(move_constructor, good) {
+    logicalElement a(2,2);
+    logicalElement b = std::move(a);
+    ASSERT_EQ(0, a.getCurrsize());
+}
+#endif
 
 ///////////////////////setters//////////////////////////
 
@@ -137,12 +153,14 @@ TEST(plus_logE, good) {
 	ASSERT_EQ(true, a==d);
 }
 
+#ifndef dynamic
 TEST(plus_logE, bad) {
 	logicalElement b(8,0);
 	logicalElement a(8,0);
 	logicalElement c;
 	ASSERT_ANY_THROW(c = a+b);
 }
+#endif
 
 TEST(plus_clamp, good) {
 	logicalElement a;
@@ -153,12 +171,14 @@ TEST(plus_clamp, good) {
 	ASSERT_EQ(true, a==c);
 }
 
+#ifndef dynamic
 TEST(plus_clamp, bad) {
 	logicalElement a;
 	logicalElement b(9,0);
 	clamp value(true);
 	ASSERT_ANY_THROW(a = b+value);
 }
+#endif
 
 /////////////////////operation!////////////////////////
 
@@ -186,11 +206,13 @@ TEST(pluseq_logE, good) {
 	ASSERT_EQ(true, a==d);
 }
 
+#ifndef dynamic
 TEST(pluseq_logE, bad) {
 	logicalElement b(8,0);
 	logicalElement a(4,0);
 	ASSERT_ANY_THROW(a+=b);
 }
+#endif
 
 TEST(pluseq_clamp, good) {
 	logicalElement a;
@@ -200,11 +222,13 @@ TEST(pluseq_clamp, good) {
 	ASSERT_EQ(true, a==c);
 }
 
+#ifndef dynamic
 TEST(pluseq_clamp, bad) {
 	logicalElement a(9,0);
 	clamp value(true);
 	ASSERT_ANY_THROW(a += value);
 }
+#endif
 
 ////////////////////////////operator[]/////////////////
 
@@ -213,12 +237,23 @@ TEST(index, bad) {
 	ASSERT_ANY_THROW(a[3]);
 }
 
-TEST(index, good) {
+TEST(index, good1) {
 	logicalElement a;
 	ASSERT_NO_THROW(a[1]);
 	clamp value(true);
 	ASSERT_EQ(value.signal,a[1].signal);
 	ASSERT_EQ(value.currConnections, a[1].currConnections);
+}
+
+TEST(index, good2) {
+    logicalElement a(2,2);
+    logicalElement b(2,2);
+    ASSERT_NO_THROW(a[1] = b[0]);
+}
+
+TEST(index_const, good) {
+    const logicalElement a(2,2);
+    ASSERT_NO_THROW(a[1]);
 }
 
 ////////////////////////////////////////////////////////

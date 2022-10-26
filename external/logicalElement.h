@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-#include <math.h>
 #include <limits>
 #include <string>
 
@@ -12,24 +11,25 @@ struct clamp { //default = input clamp
 		size_t connections[3] = {0}; 
 		clamp(const bool input_flag);
 		clamp();
-}; 
+};
 
 class logicalElement {
 private:
 	size_t currsize = 0;
-#ifndef dynamic
-	static const size_t N = 10;
-	clamp clamps[N];
-#elif
+#ifdef dynamic
     clamp* clamps;
+    void resize(const size_t new_size);
+#else
+    static const size_t N = 10;
+    clamp clamps[N];
 #endif
 	void findEmptyConnection(size_t& num_clamp, size_t& num_connection, const bool isInput);
 	void shift (const size_t connection, const size_t clamp);
 	void emptyCase(const size_t clamp);
-	bool signalString(const std::string& str);
+	bool signalString(const std::string& str) const;
 	bool is_equal_clamps(const clamp& first, const clamp& second) const;
 	int is_in_element(const clamp& other) const;
-	bool found (const size_t arr[], const size_t size, const size_t num_clamp_from);
+	bool found (const size_t arr[], const size_t size, const size_t num_clamp_from) const;
 
 public:
 	logicalElement();
@@ -37,6 +37,7 @@ public:
 	logicalElement(clamp specArr[], size_t size);
 	logicalElement(const logicalElement &other);
 #ifdef dynamic
+    logicalElement(logicalElement&& other);
     ~logicalElement();
 #endif
 
@@ -46,13 +47,15 @@ public:
 	size_t getCurrsize() const;
 	void addConnection(logicalElement& other, const bool isInput);
 	void deleteConnection(logicalElement& other);
-	void deleteConnection();
 
 	void addClamp(clamp& value);
 
 	friend std::ostream& operator>> (std::ostream &in, logicalElement& value);
 	friend std::ostream& operator<< (std::ostream &out, const logicalElement& value);
 	logicalElement& operator= (const logicalElement& other);
+#ifdef dynamic
+    logicalElement& operator=(logicalElement &&other);
+#endif
 	logicalElement operator+ (const logicalElement& other) const;
 	logicalElement operator+ (const clamp& other) const;
 	logicalElement& operator! ();
@@ -60,6 +63,6 @@ public:
 	bool operator!= (const logicalElement& other) const;
 	logicalElement& operator+= (const logicalElement& other);
 	logicalElement& operator+= (const clamp& other);
-	clamp operator[] (const size_t index) const;
+	const clamp& operator[] (const size_t index) const;
 	clamp& operator[] (const size_t index);
 };

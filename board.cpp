@@ -2,6 +2,8 @@
 
 int board_NS::process(board_NS::board& board) {
 	board_NS::show(board);
+    if (board.currsize == 0)
+        return 0;
 	std::cout << "Input a number of element to process:" << std::endl;
 	size_t ans;
 	try {
