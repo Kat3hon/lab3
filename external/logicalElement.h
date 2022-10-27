@@ -50,7 +50,7 @@ public:
 
 	void addClamp(clamp& value);
 
-	friend std::ostream& operator>> (std::ostream &in, logicalElement& value);
+    friend std::istream& operator>> (std::istream &in, logicalElement& value);
 	friend std::ostream& operator<< (std::ostream &out, const logicalElement& value);
 	logicalElement& operator= (const logicalElement& other);
 #ifdef dynamic

@@ -256,6 +256,22 @@ TEST(index_const, good) {
     ASSERT_NO_THROW(a[1]);
 }
 
+/////////////////////operation>><</////////////////////////
+
+TEST(output, good) {
+    logicalElement a{};
+    std::stringstream os;
+    os << a;
+    ASSERT_EQ("The clamp #1:\ntype = input\nsignal = X\n\nThe clamp #2:\ntype = output\nsignal = X\n\n", os.str());
+}
+
+TEST(input, good) {
+    logicalElement a{};
+    std::stringstream is, os;
+    os >> a;
+    os << a;
+    ASSERT_EQ("The clamp #1:\ntype = input\nsignal = 1\n\nThe clamp #2:\ntype = input\nsignal = 0\n\nThe clamp #3:\ntype = input\nsignal = 1\n\nThe clamp #4:\ntype = input\nsignal = 0\n\nThe clamp #5:\ntype = input\nsignal = X\n\n", os.str());
+}
 ////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
