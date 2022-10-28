@@ -49,12 +49,28 @@ TEST(copy_concstructor, good) {
     logicalElement a(2,2);
     logicalElement b(a);
     ASSERT_EQ(true, a==b);
-    ASSERT_EQ(4,a.getCurrsize());
+    ASSERT_EQ(4, b.getCurrsize());
+    clamp v1{true};
+    clamp v2{false};
+    ASSERT_EQ(true, v1==b[1]);
+    ASSERT_EQ(true, v1==b[1]);
+    ASSERT_EQ(true, v2==b[2]);
+    ASSERT_EQ(true, v2==b[3]);
 }
+
+TEST(assign, good) {
+    logicalElement a(2,2);
+    logicalElement b;
+    b = a;
+    ASSERT_EQ(true, a==b);
+}
+
 #ifdef dynamic
 TEST(move_constructor, good) {
     logicalElement a(2,2);
-    logicalElement b = std::move(a);
+    logicalElement b(a);
+    logicalElement c = std::move(a);
+    ASSERT_EQ(true, c==b);
     ASSERT_EQ(0, a.getCurrsize());
 }
 #endif
@@ -268,9 +284,23 @@ TEST(output, good) {
 TEST(input, good) {
     logicalElement a{};
     std::stringstream is, os;
-    os >> a;
-    os << a;
-    ASSERT_EQ("The clamp #1:\ntype = input\nsignal = 1\n\nThe clamp #2:\ntype = input\nsignal = 0\n\nThe clamp #3:\ntype = input\nsignal = 1\n\nThe clamp #4:\ntype = input\nsignal = 0\n\nThe clamp #5:\ntype = input\nsignal = X\n\n", os.str());
+    is << "1010X";
+    is >> a;
+//    os << a;
+//    ASSERT_EQ("The clamp #1:\ntype = input\nsignal = 1\n\nThe clamp #2:\ntype = input\nsignal = 0\n\nThe clamp #3:\ntype = input\nsignal = 1\n\nThe clamp #4:\ntype = input\nsignal = 0\n\nThe clamp #5:\ntype = input\nsignal = X\n\n", os.str());
+    logicalElement b{}, c{};
+    clamp v1{true};
+    v1.signal = 'X';
+    b += c;
+    b[0].signal = '1';
+    b[2].signal = '1';
+    b += v1;
+    b[1] = v1;
+    b[1].signal = '0';
+    b[3] = v1;
+    b[3].signal = '0';
+    ASSERT_EQ(true, a==b);
+
 }
 ////////////////////////////////////////////////////////
 

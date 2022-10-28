@@ -14,6 +14,19 @@ clamp::clamp(){
 	else maxConnections = 3;
 }
 
+bool clamp::isEqualConnections(const size_t arr1[], const size_t arr2[], const size_t size) {
+    for (size_t i = 0; i < size; ++i)
+        if (arr1[i] != arr2[i])
+            return false;
+    return true;
+}
+
+bool clamp::operator==(const clamp& other) {
+    if (isInput == other.isInput && signal == other.signal && currConnections == other.currConnections && isEqualConnections(connections, other.connections, currConnections))
+        return true;
+    return false;
+}
+
 ////////////////////////////////PRIVATE/////////////////////////////////////////////////////////////
 
 bool logicalElement::signalString(const std::string& str) const {
@@ -148,7 +161,9 @@ std::ostream& operator<< (std::ostream &out, const logicalElement& value) {
 
 std::istream& operator>> (std::istream &in, logicalElement& value) {
     logicalElement new_elem(5,0);
-    new_elem.setSignal("1010X");
+    std::string buf;
+    in >> buf;
+    new_elem.setSignal(buf);
     value = new_elem;
     return in;
 }

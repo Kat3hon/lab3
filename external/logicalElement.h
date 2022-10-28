@@ -11,6 +11,8 @@ struct clamp { //default = input clamp
 		size_t connections[3] = {0}; 
 		clamp(const bool input_flag);
 		clamp();
+        bool operator==(const clamp& other);
+        bool isEqualConnections(const size_t arr1[], const size_t arr2[], const size_t size);
 };
 
 class logicalElement {
