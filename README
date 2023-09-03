@@ -1,3 +1,7 @@
+# lab3
+
+Третья лабораторная работа третьего семестра этого курса. Описание моего задания и общего задания можно найти в папке с лабой. Ниже описание запуска программы :)
+
 Library constists of two files:
     logicalElement.h - class and methods
     logicalElement.cpp - implementation
